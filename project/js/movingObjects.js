@@ -17,6 +17,7 @@ class MovingObjects {
         // });
     }
 
+
     getLeft() {
         return this.x;
     }
