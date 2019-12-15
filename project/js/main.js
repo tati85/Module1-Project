@@ -1,18 +1,29 @@
-// window.onload = function() {
-//     document.getElementById("start-button").onclick = function() {
-//         startGame();
-//     };
+var spriteData;
 
-//     function startGame() {
-//         const myGame = new Game();
-//         myGame.init();
+$(document).ready(function() {
+    // $.getJSON('images/texture.json', function(sprite) {
+
+    //     window.spriteData = JSON.parse(sprite);
+    // });
+    spriteData = (function() {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': 'images/texture.json',
+            'dataType': "json",
+            'success': function(data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
 
 
+    window.addEventListener("load", () => {
+        const myGame = new Game();
+        console.log(window.spriteData)
 
-//     }
-// };
-window.addEventListener("load", () => {
-    const myGame = new Game();
-    //   console.log("what: ", game);
-    myGame.init();
+        myGame.init();
+    });
 });

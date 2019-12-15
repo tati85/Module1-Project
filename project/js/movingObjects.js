@@ -1,22 +1,26 @@
 class MovingObjects {
-    constructor(x, y, w, h, board) {
+    constructor(x, y, w, h, context, canvasWhidth, canvasHeight) {
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
         this.img = new Image();
-        this.board = board;
+        this.ctx = context;
+        this.canvasWhidth = canvasWhidth;
+        this.canvasHeight = canvasHeight;
         this.speed = 0;
+
     }
 
-    drawComponent(imgSource) {
-        let myCtx = this.board.ctx;
+    drawSprite(imgSource, sx, sy, sw, sh, dx, dy, dw, dh) {
+
         this.img.src = imgSource;
-        // this.img.addEventListener("load", () => {
-        myCtx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        // });
+        this.ctx.drawImage(this.img, sx, sy, sw, sh, dx, dy, dw, dh);
     }
-
+    draw() {
+        //this.img.src = imgSource;
+        this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
+    }
 
     getLeft() {
         return this.x;
@@ -30,6 +34,9 @@ class MovingObjects {
     }
     getBottom() {
         return this.y + this.height;
+    }
+    outBoard() {
+        return (this.getLeft() < 0 || this.getRight() > this.canvasWhidth || this.getTop() < 0 || this.getBottom > this.canvasHeight);
     }
 
     //   didCollide(otherComp) {

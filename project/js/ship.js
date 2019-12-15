@@ -1,124 +1,167 @@
 class Ship extends MovingObjects {
-    constructor(w, h, board) {
-        super(board.with / 2, board.height / 2, w, h, board);
+    constructor(x, y, w, h, context, canvaswidht, canvasHeight) {
+        super(x, y, w, h, context, canvaswidht, canvasHeight);
+        this.image = new Image();
+        this.velX = 0.1;
+        this.velY = 0.1;
+        this.movingForward = false;
+        this.speed = 4;
+        this.index = 0
 
-        this.velX = 0;
-        this.velX = 0;
         this.noseX = this.x + this.width / 2;
         this.noseY = this.y;
         this.visible = true;
-        this.movingForward = false;
-        this.speed = 0.1;
-        this.image = new Image();
+        this.radius = this.width / 2;
+
         this.rotateSpeed = 0.001;
         //this.radius = 15;
         this.angle = 0;
-
+        this.bullets = [];
+    }
+    updateNose() {
+        switch (this.angle) {
+            case 0:
+                this.noseX = this.x + this.width / 2;
+                this.noseY = this.y;
+                break;
+            case 90:
+                this.noseX = this.x + this.width;
+                this.noseY = this.y + this.height / 2;
+                break;
+            case 180:
+                this.noseX = this.x + this.width / 2;
+                this.noseY = this.y + this.height;
+                break;
+            case 270:
+                this.noseX = this.x;
+                this.noseY = this.y + this.height / 2;
+                break;
+        }
 
     }
     rotate(dir) {
-        this.angle += this.rotateSpeed * dir;
-    }
-    update() {
-        // Get current direction ship is facing
-        let radians = this.angle / Math.PI * 180;
 
-        // If moving forward calculate changing values of x & y
-        // If you want to find the new point x use the 
-        // formula oldX + cos(radians) * distance
-        // Forumla for y oldY + sin(radians) * distance
+            if (dir > 0 && this.angle === 270) {
+                this.angle = 0;
+                this.index = 0;
+            } else if (dir < 0 && this.angle === 0) {
+                this.angle = 270;
+                this.index = 9;
+            } else {
+                this.angle += 90 * dir;
+                this.index += 3 * dir;
+            }
+
+            this.updateNose();
+        }
+        //update x and y after rotation
+    update() {
         if (this.movingForward) {
-            this.velX += Math.cos(radians) * this.speed;
-            this.velY += Math.sin(radians) * this.speed;
+            switch (this.angle) {
+                case 0:
+                    {
+                        this.y -= this.speed;
+                        this.updateNose();
+                    }
+                    break;
+                case 90:
+                    {
+                        this.x += this.speed;
+                        this.updateNose();
+                    }
+                    break;
+                case 180:
+                    {
+                        this.y += this.speed;
+                        this.updateNose();
+                    }
+                    break;
+                case 270:
+                    {
+                        this.x -= this.speed;
+                        this.updateNose();
+                    }
+                    break;
+
+                    // (this.x = this.x * Math.cos(this.angle) - this.y * Math.sin(this.angle)) / 100;
+                    // (this.y = this.x * Math.sin(this.angle) - this.y * Math.cos(this.angle)) / 100;
+            }
         }
         // If ship goes off board put on the edges
 
-        if (this.x < 0) {
+        if (this.getLeft() < 0) {
             this.x = 0;
         }
-        if (this.x > this.board.canvas.width) {
-            this.x = this.board.canvas.width;
+        if (this.getRight() > this.canvasWhidth) {
+            this.x = this.canvasWhidth - this.width;
         }
-        if (this.y < 0) {
+        if (this.getTop() < 0) {
             this.y = 0;
         }
-        if (this.y > this.board.canvas.height) {
-            this.y = this.board.canvas.height;
+        if (this.getBottom > this.canvasHeight) {
+            this.y = this.canvasHeight - this.height;
         }
-        // Slow ship speed when not holding key
-        this.velX *= 0.99;
-        this.velY *= 0.99;
 
-        // Change value of x & y while accounting for
-        // air friction    
-        this.x -= this.velX;
-        this.y -= this.velY;
-    }
-
-    drawRotated() {
-        let myCtx = this.board.ctx;
-        myCtx.clearRect(0, 0, this.board.width, this.board.height);
-
-        // save the unrotated context of the canvas so we can restore it later
-        // the alternative is to untranslate & unrotate after drawing
-        myCtx.save();
-
-        // move to the center of the canvas
-        myCtx.translate(this.board.width / 2, this.board.height / 2);
-
-        // rotate the canvas to the specified degrees
-        myCtx.rotate(this.angle * Math.PI / 180);
-
-        // draw the image
-        // since the context is rotated, the image will be rotated also
-        myCtx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        myCtx.drawImage(this.image, -1 * this.image.width / 2, -1 * this.image.width / 2);
-
-        // we’re done with the rotating so restore the unrotated context
-        myCtx.restore();
     }
 
 
     move() {
+        const possibleKeystrokes = [37, 65, 38, 39, 83, 87, 32];
         document.onkeydown = event => {
-            //   console.log("event: ", event.keyCode);
-            const key = event.keyCode;
-            const possibleKeystrokes = [37, 65, 38, 87, 39, 83, 40, 68];
+            let key = event.keyCode;
+            //console.log(key);        
             if (possibleKeystrokes.includes(key)) {
                 event.preventDefault();
                 switch (key) {
+                    //rotating right
                     case 37:
                     case 65:
-                        if (this.x >= 0) this.x -= this.speed;
+                        {
+                            this.movingForward = false;
+                            this.rotate(-1);
+                        }
                         break;
+                        //moving foward
                     case 38:
                     case 87:
-                        if (this.y >= 10) this.y -= this.speed;
+                        this.movingForward = true;
                         break;
+                        //rotating left
                     case 39:
                     case 83:
-                        if (this.x <= 1000 - this.width) this.x += this.speed;
+                        {
+                            this.movingForward = false;
+                            this.rotate(1);
+                        }
                         break;
-                    case 40:
-                    case 68:
-                        if (this.y <= 500 - this.height) this.y += this.speed;
+                        //shooting
+                    case 32:
+                        {
+                            this.bullets.push(new Bullet(this.angle, this.noseX, this.noseY, this.ctx, this.canvasWhidth, this.canvasHeight))
+                            console.log("pressing spacebar")
+                        }
                         break;
+
                 }
             }
         };
+        document.onkeyup = event => {
+            let key = event.keyCode;
+            console.log("key up    " + key)
+
+            if (possibleKeystrokes.includes(key)) {
+                event.preventDefault();
+                if (key === 38 || key === 87) {
+                    this.movingForward = false;
+                    console.log("inside key ===32")
+                    console.log("false");
+                }
+            }
+
+        }
     }
 
 
-    getShuttingX() {
-        //return the front image x for shutting------do math
-        return this.noseX;
 
-    }
-
-    getShuttingY() {
-        //return the front image x for shutting------do math
-        return this.noseY;
-
-    }
 
 }
