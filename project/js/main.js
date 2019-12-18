@@ -1,16 +1,29 @@
 var spriteData;
+var spriteAsteroids;
+let canvasWidth;
+let canvasHeight;
 
 $(document).ready(function() {
-    // $.getJSON('images/texture.json', function(sprite) {
 
-    //     window.spriteData = JSON.parse(sprite);
-    // });
     spriteData = (function() {
-        var json = null;
+        let json = null;
         $.ajax({
             'async': false,
             'global': false,
-            'url': 'images/texture.json',
+            'url': 'images/spaceShips/redSS.json',
+            'dataType': "json",
+            'success': function(data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+    spriteAsteroids = (function() {
+        let json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': 'images/asteroids/asteroids.json',
             'dataType': "json",
             'success': function(data) {
                 json = data;
@@ -21,9 +34,8 @@ $(document).ready(function() {
 
 
     window.addEventListener("load", () => {
+        console.log("load")
         const myGame = new Game();
-        console.log(window.spriteData)
-
         myGame.init();
     });
 });
