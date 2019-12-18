@@ -91,15 +91,7 @@ class Game {
                     var soundFlag = true;
                     for (let k = 0; k < this.asteroids.length; k++) {
                         if (this.myShip.didCollide(this.asteroids[k])) {
-                            //sound
 
-                            // if (soundFlag) {
-                            //     sound.pause();
-                            //     sound.currentTime = 0;
-                            //     sound.play();
-                            //     soundFlag = false;
-
-                            // }
                             //show explosion                             
                             this.myShip.visible = false;
                             let x = 0;
@@ -257,8 +249,8 @@ class Game {
     GameOver() {
         this.myShip.visible = false;
         let img = new Image();
-        img.src = "images/game over.png";
-        this.ctx.drawImage(img, this.canvas.width * 0.5 - 30, this.canvas.height * 0.5 - 30, 60, 60)
+        img.src = "images/gameOver.png";
+        this.ctx.drawImage(img, this.canvas.width * 0.5 - 30, this.canvas.height * 0.5 - 30, 150, 150)
             // this.ctx.fillStyle = 'white';
             // this.ctx.font = '50px Arial';
             // this.ctx.fillText("GAME OVER", this.canvas.width / 2 - 150, this.canvas.height / 2);

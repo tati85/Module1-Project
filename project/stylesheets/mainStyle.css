@@ -3,6 +3,35 @@ body {
     height: 100%;
     padding: 0;
     margin: 0px;
-    background-color: red;
-    /*background-image: url("../images/backgrounds/space2.jpg");*/
+    /*background-color: red;*/
+    background-image: url("../images/backgrounds/space2.jpg");
+}
+
+header {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    display: flex;
+    font-size: 32px;
+    color: white;
+}
+
+div {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    font-size: 25px;
+    width: 300px;
+    color: white;
+    display: flex;
 }

@@ -11,7 +11,7 @@ $(document).ready(function() {
         $.ajax({
             'async': false,
             'global': false,
-            'url': 'images/spaceShips/redSS.json',
+            'url': '../images/redSS.json',
             'dataType': "json",
             'success': function(data) {
                 json = data;
