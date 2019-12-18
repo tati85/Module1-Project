@@ -10,8 +10,14 @@ class Asteroid extends MovingObjects {
         this.level = level || 1; //the biggest level---(3levels)
         this.speed = 1;
         this.img = new Image();
+        this.img.src = "images/asteroids/asteroids.png";
         this.sx = 0;
         this.sy = 0;
+        this.sw = 0;
+        this.sh = 0;
+    }
+    setContext(ctx) {
+        this.ctx = ctx;
     }
     update() {
         let radians = this.angle / Math.PI * 180;
@@ -32,29 +38,28 @@ class Asteroid extends MovingObjects {
         }
     }
 
-    draw(imgSource, ctx) {
-        this.ctx = ctx;
-        this.img.src = imgSource;
-        this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
-    }
-    getLeft() {
-        return this.x - 10;
-    }
-    getRight() {
-        return this.x + this.width - 10;
-    }
 
-    getTop() {
-        return this.y - 10;
-    }
-    getBottom() {
-        return this.y + this.height - 10;
-    }
+    // getLeft() {
+    //     return this.x - 10;
+    // }
+    // getRight() {
+    //     return this.x + this.width - 10;
+    // }
+
+    // getTop() {
+    //     return this.y - 10;
+    // }
+    // getBottom() {
+    //     return this.y + this.height - 10;
+    // }
     randomImage(min, max) {
         let index = Math.floor(Math.random() * (max - min + 1) + min);
         this.sx = spriteAsteroids.frames[index].frame.x;
         this.sy = spriteAsteroids.frames[index].frame.y;
-        this.img.src = "images/spaceShips/asteroids.png";
+        this.sw = spriteAsteroids.frames[index].frame.w;
+        this.sh = spriteAsteroids.frames[index].frame.h;
+        // console.log(index + "********************index*******");
+        // console.log("sx " + this.sx + " sy " + this.sy)
 
 
     }

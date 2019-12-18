@@ -2,6 +2,7 @@ var spriteData;
 var spriteAsteroids;
 let canvasWidth;
 let canvasHeight;
+var sound = document.getElementById("sound1");
 
 $(document).ready(function() {
 
@@ -19,23 +20,26 @@ $(document).ready(function() {
         return json;
     })();
     spriteAsteroids = (function() {
-        let json = null;
+        let json1 = null;
         $.ajax({
             'async': false,
             'global': false,
             'url': 'images/asteroids/asteroids.json',
             'dataType': "json",
             'success': function(data) {
-                json = data;
+                json1 = data;
             }
         });
-        return json;
+        return json1;
     })();
 
 
     window.addEventListener("load", () => {
-        console.log("load")
+        console.log("load");
+        sound = document.getElementById("sound1");
+        sound.play();
         const myGame = new Game();
+
         myGame.init();
     });
 });

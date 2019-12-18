@@ -2,6 +2,7 @@ class Ship extends MovingObjects {
     constructor(x, y, w, h, context) {
         super(x, y, w, h, context);
         this.image = new Image();
+        this.img.src = "images/spaceShips/redSS.png";
         this.movingForward = false;
         this.speed = 4;
         this.index = 0;
@@ -99,80 +100,57 @@ class Ship extends MovingObjects {
 
     }
     move() {
-            const possibleKeystrokes = [37, 65, 38, 39, 83, 87, 32];
-            document.onkeydown = event => {
-                let key = event.keyCode;
-                //console.log(key);        
-                if (possibleKeystrokes.includes(key)) {
-                    event.preventDefault();
-                    switch (key) {
-                        //rotating right
-                        case 37:
-                        case 65:
-                            {
-                                this.movingForward = false;
-                                this.rotate(-1);
-                            }
-                            break;
-                            //moving foward
-                        case 38:
-                        case 87:
-                            this.movingForward = true;
-                            break;
-                            //rotating left
-                        case 39:
-                        case 83:
-                            {
-                                this.movingForward = false;
-                                this.rotate(1);
-                            }
-                            break;
-                            //shooting
-                        case 32:
-                            {
-                                this.bullets.push(new Bullet(this.angle, this.noseX, this.noseY, this.ctx))
+        const possibleKeystrokes = [37, 65, 38, 39, 83, 87, 32];
+        document.onkeydown = event => {
+            let key = event.keyCode;
+            //console.log(key);        
+            if (possibleKeystrokes.includes(key)) {
+                event.preventDefault();
+                switch (key) {
+                    //rotating right
+                    case 37:
+                    case 65:
+                        {
+                            this.movingForward = false;
+                            this.rotate(-1);
+                        }
+                        break;
+                        //moving foward
+                    case 38:
+                    case 87:
+                        this.movingForward = true;
+                        break;
+                        //rotating left
+                    case 39:
+                    case 83:
+                        {
+                            this.movingForward = false;
+                            this.rotate(1);
+                        }
+                        break;
+                        //shooting
+                    case 32:
+                        {
+                            this.bullets.push(new Bullet(this.angle, this.noseX, this.noseY, this.ctx))
 
-                            }
-                            break;
+                        }
+                        break;
 
-                    }
                 }
-            };
-            document.onkeyup = event => {
-                let key = event.keyCode;
-                console.log("key up    " + key)
-
-                if (possibleKeystrokes.includes(key)) {
-                    event.preventDefault();
-                    if (key === 38 || key === 87) {
-                        this.movingForward = false;
-                    }
-                }
-
             }
+        };
+        document.onkeyup = event => {
+            let key = event.keyCode;
+            console.log("key up    " + key)
+
+            if (possibleKeystrokes.includes(key)) {
+                event.preventDefault();
+                if (key === 38 || key === 87) {
+                    this.movingForward = false;
+                }
+            }
+
         }
-        // getLeft() {
-        //     // switch (this.angle)
-        //     // {
-        //     //     case 0:
-        //     //         return this.x +50;
-        //     //         break;
-        //     //     case 90: return this.x +50;
-        //     //     break;
-        //     //     case 180:
-        //     return this.x;
-
-    // }
-
-    // getRight() {
-    //     return this.x + this.width - 50;
-    // }
-
-    // getTop() {
-    //     return this.y - 50;
-    // }
-    // getBottom() {
-    //     return this.y + this.height - 50;
-    // }
+    }
 
 }

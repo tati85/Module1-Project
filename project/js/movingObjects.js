@@ -9,13 +9,12 @@ class MovingObjects {
         this.speed = 0;
     }
 
-    drawSprite(imgSource, sx, sy, sw, sh, dx, dy, dw, dh) {
 
-        this.img.src = imgSource;
+    drawSprite(sx, sy, sw, sh, dx, dy, dw, dh) {
         this.ctx.drawImage(this.img, sx, sy, sw, sh, dx, dy, dw, dh);
     }
-    draw() {
 
+    draw() {
         this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
     }
 
