@@ -1,5 +1,6 @@
 class Game {
     constructor() {
+        this.explodingasteroid = null;
         //background       
         this.lastFrameTime = 0;
         this.totalSeconds = 0;
@@ -24,7 +25,7 @@ class Game {
         this.canvas = undefined;
         this.ctx = undefined;
         this.asteroids = [];
-        this.asteroidsNumber = 3;
+        this.asteroidsNumber = 5;
         this.lives = 3;
         this.score = 0;
     }
@@ -69,8 +70,11 @@ class Game {
         this.beging();
 
     }
+    reset = () => {
+        window.location.reload()
+    }
     beging() {
-            const interval = setInterval(() => {
+            let interval = setInterval(() => {
                 //background
                 var now = Date.now();
                 var deltaSeconds = (now - this.lastFrameTime) / 10000;
@@ -82,8 +86,14 @@ class Game {
                 this.clear(this.ctx);
                 this.displayScore();
                 //check game over
-                if (this.lives <= 0)
+                if (this.lives <= 0) {
                     this.GameOver();
+                    // clearInterval(interval)
+                    setTimeout(
+                        this.reset,
+                        2000
+                    )
+                }
                 this.drawLifeShips();
 
                 // Check for collision of ship with asteroid
@@ -92,14 +102,15 @@ class Game {
                     for (let k = 0; k < this.asteroids.length; k++) {
                         if (this.myShip.didCollide(this.asteroids[k])) {
 
+
                             //show explosion                             
                             this.myShip.visible = false;
                             let x = 0;
-                            this.stopExplosion = setInterval(() => {
+                            let stopExplosion = setInterval(() => {
                                 this.drawExplosion(this.myShip.x, this.myShip.y);
                                 if (++x === 8) {
                                     this.clear(this.ctxExplosion);
-                                    window.clearInterval(this.stopExplosion);
+                                    window.clearInterval(stopExplosion);
                                 }
                             }, 100);
                             this.asteroids.splice(k, 1)
@@ -116,6 +127,7 @@ class Game {
                     for (let l = 0; l < this.asteroids.length; l++) {
                         for (let m = 0; m < this.myShip.bullets.length; m++) {
                             if (this.asteroids[l].didCollide(this.myShip.bullets[m])) {
+                                this.exploding = false;
                                 // Check if asteroid can be broken into smaller pieces
                                 if (this.asteroids[l].level === 1) {
 
@@ -140,19 +152,27 @@ class Game {
                                 if (this.asteroids[l].level === 3) {
                                     //show explosion
                                     this.asteroids[l].visible = false;
+                                    this.explodingasteroid = { x: this.asteroids[l].x, y: this.asteroids[l].y }
+
                                     let x = 0;
-                                    this.stopExpAster1 = setInterval(() => {
-                                        this.drawExplosion(this.asteroids[l].x, this.asteroids[l].y);
-                                        if (++x === 8) {
-                                            this.clear(this.ctxExplosion);
-                                            window.clearInterval(this.stopExpAster1);
-                                        }
-                                    }, 100);
+                                    if (!this.exploding) {
+
+                                        var stopExpAster1 = setInterval(() => {
+                                            this.exploding = true
+                                            this.drawExplosion(this.explodingasteroid.x, this.explodingasteroid.y);
+                                            if (++x >= 8) {
+                                                this.exploding = false;
+                                                this.clear(this.ctxExplosion);
+                                                clearInterval(stopExpAster1);
+                                            }
+                                        }, 100);
+
+                                    }
                                 }
 
                                 // setTimeout(() => {
-                                this.asteroids.splice(l, 1);
                                 // }, 800);
+                                this.asteroids.splice(l, 1);
                                 this.myShip.bullets.splice(m, 1);
                                 this.score += 20;
                                 m = this.myShip.bullets.length;
@@ -248,12 +268,12 @@ class Game {
     }
     GameOver() {
         this.myShip.visible = false;
+        this.myShip.bullets = [];
+        this.asteroids = [];
+        this.clear(this.ctx);
+        this.clear(this.ctxExplosion);
         let img = new Image();
-        img.src = "images/gameOver.png";
-        this.ctx.drawImage(img, this.canvas.width * 0.5 - 30, this.canvas.height * 0.5 - 30, 150, 150)
-            // this.ctx.fillStyle = 'white';
-            // this.ctx.font = '50px Arial';
-            // this.ctx.fillText("GAME OVER", this.canvas.width / 2 - 150, this.canvas.height / 2);
+
     }
     drawBackground(delta) {
             this.totalSeconds += delta;
