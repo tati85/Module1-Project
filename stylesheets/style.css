@@ -1,0 +1,30 @@
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0px;
+    background-color: black;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+}
+
+canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#scene {
+    z-index: 1;
+}
+
+#canvas {
+    z-index: 2;
+}
+
+#top {
+    z-index: 3;
+}
