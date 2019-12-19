@@ -273,6 +273,8 @@ class Game {
         this.clear(this.ctx);
         this.clear(this.ctxExplosion);
         let img = new Image();
+        img.src = "images/backgrounds/gameOver.png"
+        this.ctx.drawImage(img, this.canvas.width * 0.5 - 200, this.canvas.height * 0.5 - 200, 500, 500)
 
     }
     drawBackground(delta) {
