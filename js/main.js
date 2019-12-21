@@ -1,14 +1,16 @@
 let canvasWidth;
 let canvasHeight;
 var sound = document.getElementById("sound1");
+let asteroidsNumber = localStorage.getItem("asteroids") || 8;
+console.log(localStorage.getItem("asteroids"), '>>>>')
 
 
 
 
 window.addEventListener("load", () => {
-    console.log("load");
     sound = document.getElementById("sound1");
-    sound.play();
+    //sound.play();
+    console.log("load");
 
 
     function startGame() {

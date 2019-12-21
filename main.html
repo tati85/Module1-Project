@@ -20,26 +20,34 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <header>
-        <h1>Asteroids Blast</h1>
-    </header>
-    <div>
-        <form>
-            <input type="radio" name="easy" value="easy" checked>Easy<br>
-            <input type="radio" name="medium" value="medium"> Midium<br>
-            <input type="radio" name="hard" value="hard"> Hard
-        </form>
 
+
+        <img src="images/backgrounds/powerup_information_tile_left.png" alt="">
+        <h1>Asteroids Blast</h1>
+        <img src="images/backgrounds/powerup_information_tile_right.png" alt="">
+    </header>
+    <span></span>
+
+    <h1 id="level">Select mode</h1>
+    <label class="container">Easy
+      <input type="radio" checked="checked" name="mode" value="easy">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Hard
+      <input type="radio" name="mode" value="hard">
+      <span class="checkmark"></span>
+    </label>
+
+
+
+    <div class="starBtn">
+        <a href="index.html" id="starLink"><img src="images/backgrounds/button_arrow_right.png" alt="" id="starImg"></a>
     </div>
 
 
-    <script>
-        function myFunction() {
-            window.open("index.html");
-        }
-    </script>
 
 
-    <script src="" async defer></script>
+    <script src="js/start.js" async defer></script>
 </body>
 
-</html>
+</html>S
