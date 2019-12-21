@@ -1,6 +1,7 @@
 class Game {
     constructor() {
         this.explodingasteroid = null;
+        this.deleting = false;
         //background       
         this.lastFrameTime = 0;
         this.totalSeconds = 0;
@@ -8,16 +9,13 @@ class Game {
         this.backgroundImg.src = "images/backgrounds/space5.jpg";
         this.canvasScene = undefined;
         this.ctxScene = undefined;
-        this.stopScene = 0;
         //explosions
         this.canvasExplosion = undefined;
+        this.explodingShip = undefined;
         this.ctxExplosion = undefined;
         this.explosions = new Image();
         this.explosions.src = "images/explosions/explosion.png"
         this.explosionFrames = 0;
-        this.stopExplosion = 0;
-        this.stopExpAster1 = 0;
-        this.stopExpAster2 = 0;
 
         //canvas for players
         this.x = 0;
@@ -25,11 +23,12 @@ class Game {
         this.canvas = undefined;
         this.ctx = undefined;
         this.asteroids = [];
-        this.asteroidsNumber = 5;
+        this.asteroidsNumber = asteroidsNumber;
         this.lives = 3;
         this.score = 0;
+        this.levelTwo = false;
+        this.displayingLevel2Text = false;
     }
-
 
     init() {
         //set up players's canvas
@@ -58,6 +57,7 @@ class Game {
 
 
         this.myShip = new Ship(this.canvas.width * 0.5, this.canvas.height * 0.5, 160, 160, this.ctx);
+        console.log(this.asteroidsNumber)
 
         //create asteroids
         for (let i = 0; i < this.asteroidsNumber; i++) {
@@ -71,59 +71,93 @@ class Game {
 
     }
     reset = () => {
-        window.location.reload()
+        window.location.reload();
     }
+    moveBackground() {
+        var now = Date.now();
+        var deltaSeconds = (now - this.lastFrameTime) / 10000;
+        this.lastFrameTime = now;
+        return deltaSeconds
+    }
+
+
     beging() {
             let interval = setInterval(() => {
                 //background
-                var now = Date.now();
-                var deltaSeconds = (now - this.lastFrameTime) / 10000;
-                this.lastFrameTime = now;
+                console.log(this.asteroidsNumber, '>>> s')
                 this.clear(this.ctxScene);
-                this.drawBackground(deltaSeconds);
+                this.drawBackground(this.moveBackground);
 
                 //players
                 this.clear(this.ctx);
                 this.displayScore();
-                //check game over
-                if (this.lives <= 0) {
-                    this.GameOver();
-                    // clearInterval(interval)
-                    setTimeout(
-                        this.reset,
-                        2000
-                    )
-                }
                 this.drawLifeShips();
 
+                //check game over
+                if (this.lives <= 0) {
+                    this.GameOver(interval);
+                    // // clearInterval(interval)
+                    // setTimeout(
+                    //     this.reset,
+                    //     2000
+                    // )
+                }
+
+                //check for level2
+                // if (this.asteroids.length === 0 && !this.levelTwo) {
+                //     this.displayLevel2();
+                //     let stp = setTimeout(() => {
+                //         this.resetShip();
+                //         //create asteroids
+                //         for (let i = 0; i < this.asteroidsNumber; i++) {
+                //             this.asteroids.push(new Asteroid());
+                //             this.asteroids[i].setContext(this.ctx);
+                //             this.asteroids[i].randomImage(0, 2);
+                //             this.asteroids[i] += 0.5;
+                //         }
+                //         //change imag background
+                //         this.backgroundImg.src = "images/backgrounds/space4.jpg";
+                //         this.displayingLevel2Text = false;
+                //     }, 3000)
+
+                // }
+                //check end
+                // if (this.asteroids.length === 0 && this.levelTwo) {
+
+
+                // }
+
+
                 // Check for collision of ship with asteroid
-                if (this.asteroids.length !== 0) {
+                if (this.asteroids.length !== 0 && !this.deleting && !this.displayingLevel2Text) {
                     var soundFlag = true;
                     for (let k = 0; k < this.asteroids.length; k++) {
                         if (this.myShip.didCollide(this.asteroids[k])) {
 
-
-                            //show explosion                             
+                            //show explosion  
+                            this.explodingShip = { x: this.myShip.x, y: this.myShip.y }
                             this.myShip.visible = false;
                             let x = 0;
-                            let stopExplosion = setInterval(() => {
-                                this.drawExplosion(this.myShip.x, this.myShip.y);
+                            let stopExplosionShip = setInterval(() => {
+                                this.drawExplosion(this.explodingShip.x, this.explodingShip.y);
                                 if (++x === 8) {
                                     this.clear(this.ctxExplosion);
-                                    window.clearInterval(stopExplosion);
+                                    clearInterval(stopExplosionShip);
                                 }
                             }, 100);
                             this.asteroids.splice(k, 1)
                             k = this.asteroids.length
                             setTimeout(() => {
                                 this.resetShip();
+                                this.lives -= 1;
+
                             }, 1000);
 
                         }
                     }
                 }
                 //check for collision of bullets with asteroids
-                if (this.asteroids.length !== 0 && this.myShip.bullets.length !== 0) {
+                if (this.asteroids.length !== 0 && this.myShip.bullets.length !== 0 && !this.deleting && !this.displayingLevel2Text) {
                     for (let l = 0; l < this.asteroids.length; l++) {
                         for (let m = 0; m < this.myShip.bullets.length; m++) {
                             if (this.asteroids[l].didCollide(this.myShip.bullets[m])) {
@@ -186,21 +220,21 @@ class Game {
                     }
                 }
 
-                if (this.myShip.visible) {
+                if (this.myShip.visible && !this.deleting && !this.displayingLevel2Text) {
 
                     this.drawMainCharacters();
                     this.myShip.move();
                     this.myShip.update();
                 }
                 //bullets
-                if (this.myShip.bullets.length !== 0) {
+                if (this.myShip.bullets.length !== 0 && !this.deleting && !this.displayingLevel2Text) {
                     for (let i = 0; i < this.myShip.bullets.length; i++) {
                         this.myShip.bullets[i].update();
                         this.myShip.bullets[i].draw();
                     }
                 }
                 //asteroids
-                if (this.asteroids.length !== 0) {
+                if (this.asteroids.length !== 0 && !this.deleting && !this.displayingLevel2Text) {
                     for (let i = 0; i < this.asteroids.length; i++) {
                         this.asteroids[i].update();
                         let sx = this.asteroids[i].sx;
@@ -227,6 +261,7 @@ class Game {
         //     canvasHeight = window.innerHeight;
         //     canvasWidth = window.innerWidth;
         // }
+
     drawLifeShips() {
         let startX = this.canvas.width - 30;
         let startY = 10;
@@ -258,21 +293,84 @@ class Game {
         this.ctx.font = '21px Arial';
         this.ctx.fillText("SCORE : " + this.score.toString(), 20, 35);
     }
+    displayGameOver() {
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '21px Arial';
+            this.ctx.fillText("PRESS ENTER TO STAR...", this.canvas.width - 500, canvas.height - 150);
+            let img = new Image();
+            img.src = "images/backgrounds/gameOver.png"
+            this.ctx.drawImage(img, this.canvas.width * 0.5 - 200, this.canvas.height * 0.5 - 200, 500, 500)
+        }
+        // displayLevel2() {
+        //     this.displayingLevel2Text = true;
+        //     this.clear(this.ctxScene);
+        //     this.clear(this.ctx);
+        //     this.clear(this.ctxExplosion);
+        //     //change the background to black
+        //     this.backgroundImg.src = "images/backgrounds/space.jpg";
+        //     this.drawBackground(this.moveBackground);
+        //     //display Level2 text
+        //     this.ctxExplosion.fillStyle = 'white';
+        //     this.ctxExplosion.font = '45px Arial';
+        //     this.ctxExplosion.fillText("LEVEL 2!!!", 200, canvas.height - 200);
+
+    // }
+
     resetShip() {
-        this.myShip.visible = true;
-        this.myShip.x = this.canvas.width / 2;
-        this.myShip.y = this.canvas.height / 2;
-        this.myShip.angle = 0;
-        this.myShip.index = 0;
-        this.lives -= 1;
-    }
-    GameOver() {
+            this.myShip.visible = true;
+            this.myShip.x = this.canvas.width / 2;
+            this.myShip.y = this.canvas.height / 2;
+            this.myShip.angle = 0;
+            this.myShip.index = 0;
+
+        }
+        // theEnd(inter) {
+        //     this.deleting = true;
+        //     this.myShip.visible = false;
+        //     this.ctx.fillStyle = 'white';
+        //     this.ctx.font = '21px Arial';
+        //     this.ctx.fillText("PRESS ENTER TO STAR...", this.canvas.width - 500, canvas.height - 150);
+        //     let img = new Image();
+        //     img.src = "images/backgrounds/you-win.png"
+        //     this.ctx.drawImage(img, this.canvas.width * 0.5 - 200, this.canvas.height * 0.5 - 200, 500, 500);
+        //     document.onkeydown = event => {
+        //         let key = event.keyCode;
+        //         if (key === 13 && this.deleting) {
+        //             this.deleteGame();
+        //             //stop the main interval
+        //             clearInterval(inter);
+        //             this.clear(this.ctxScene);
+        //             this.clear(this.ctx);
+
+    //             //show main page
+    //             window.open("main.html", "_self");
+
+    //         }
+    //     }
+    // }
+    GameOver(inter) {
+        this.deleting = true;
         this.myShip.visible = false;
+        this.displayGameOver();
+        //for press star to restar the game
+        document.onkeydown = event => {
+            let key = event.keyCode;
+            if (key === 13 && this.deleting) {
+                this.deleteGame();
+                //stop the main interval
+                clearInterval(inter);
+                this.clear(this.ctxScene);
+                this.clear(this.ctx);
+
+                //show main page
+                window.open("main.html", "_self");
+
+            }
+        }
+    }
+    deleteGame() {
         this.myShip.bullets = [];
         this.asteroids = [];
-        this.clear(this.ctx);
-        this.clear(this.ctxExplosion);
-        let img = new Image();
 
     }
     drawBackground(delta) {
