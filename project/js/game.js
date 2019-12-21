@@ -86,7 +86,7 @@ class Game {
                 //background
                 console.log(this.asteroidsNumber, '>>> s')
                 this.clear(this.ctxScene);
-                this.drawBackground(this.moveBackground);
+                this.drawBackground(this.moveBackground());
 
                 //players
                 this.clear(this.ctx);
@@ -104,23 +104,31 @@ class Game {
                 }
 
                 //check for level2
-                // if (this.asteroids.length === 0 && !this.levelTwo) {
-                //     this.displayLevel2();
-                //     let stp = setTimeout(() => {
-                //         this.resetShip();
-                //         //create asteroids
-                //         for (let i = 0; i < this.asteroidsNumber; i++) {
-                //             this.asteroids.push(new Asteroid());
-                //             this.asteroids[i].setContext(this.ctx);
-                //             this.asteroids[i].randomImage(0, 2);
-                //             this.asteroids[i] += 0.5;
-                //         }
-                //         //change imag background
-                //         this.backgroundImg.src = "images/backgrounds/space4.jpg";
-                //         this.displayingLevel2Text = false;
-                //     }, 3000)
+                if (this.asteroids.length === 0 && !this.levelTwo) {
+                    // console.log("level2 ***********************")
 
-                // }
+                    // this.displayLevel2();
+
+
+                    // setTimeout(() => {
+                    //     this.resetShip();
+                    //     //create asteroids
+                    //     for (let i = 0; i < this.asteroidsNumber; i++) {
+                    //         this.asteroids.push(new Asteroid());
+                    //         this.asteroids[i].setContext(this.ctx);
+                    //         this.asteroids[i].randomImage(0, 2);
+                    //         this.asteroids[i] += 0.5;
+                    //     }
+                    //     //change imag background
+                    //     this.backgroundImg.src = "images/backgrounds/space4.jpg";
+                    //     this.displayingLevel2Text = false;
+                    // }, 3000);
+                    this.deleting = true;
+                    let img = new Image();
+                    img.src = "images/backgrounds/you-win.png";
+                    this.ctx.drawImage(img, 250, 250, 400, 400);
+                }
+
                 //check end
                 // if (this.asteroids.length === 0 && this.levelTwo) {
 
@@ -294,27 +302,27 @@ class Game {
         this.ctx.fillText("SCORE : " + this.score.toString(), 20, 35);
     }
     displayGameOver() {
-            this.ctx.fillStyle = 'white';
-            this.ctx.font = '21px Arial';
-            this.ctx.fillText("PRESS ENTER TO STAR...", this.canvas.width - 500, canvas.height - 150);
-            let img = new Image();
-            img.src = "images/backgrounds/gameOver.png"
-            this.ctx.drawImage(img, this.canvas.width * 0.5 - 200, this.canvas.height * 0.5 - 200, 500, 500)
-        }
-        // displayLevel2() {
-        //     this.displayingLevel2Text = true;
-        //     this.clear(this.ctxScene);
-        //     this.clear(this.ctx);
-        //     this.clear(this.ctxExplosion);
-        //     //change the background to black
-        //     this.backgroundImg.src = "images/backgrounds/space.jpg";
-        //     this.drawBackground(this.moveBackground);
-        //     //display Level2 text
-        //     this.ctxExplosion.fillStyle = 'white';
-        //     this.ctxExplosion.font = '45px Arial';
-        //     this.ctxExplosion.fillText("LEVEL 2!!!", 200, canvas.height - 200);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '21px Arial';
+        this.ctx.fillText("PRESS ENTER TO STAR...", this.canvas.width - 500, canvas.height - 150);
+        let img = new Image();
+        img.src = "images/backgrounds/gameOver.png"
+        this.ctx.drawImage(img, this.canvas.width * 0.5 - 200, this.canvas.height * 0.5 - 200, 500, 500)
+    }
+    displayLevel2() {
+        this.displayingLevel2Text = true;
+        this.clear(this.ctxScene);
+        this.clear(this.ctx);
+        this.clear(this.ctxExplosion);
+        //change the background to black
+        this.backgroundImg.src = "images/backgrounds/space.jpg";
+        this.drawBackground(this.moveBackground);
+        //display Level2 text
+        this.ctxExplosion.fillStyle = 'white';
+        this.ctxExplosion.font = '45px Arial';
+        this.ctxExplosion.fillText("LEVEL 2!!!", 200, canvas.height - 200);
 
-    // }
+    }
 
     resetShip() {
             this.myShip.visible = true;
@@ -380,6 +388,7 @@ class Game {
             var xpos = this.totalSeconds * vx % this.backgroundImg.width;
             this.ctxScene.save();
             this.ctxScene.translate(-xpos, 0);
+
             for (var i = 0; i < numImages; i++) {
                 this.ctxScene.drawImage(this.backgroundImg, i * this.backgroundImg.width, 0);
             }

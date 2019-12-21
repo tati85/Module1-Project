@@ -9,7 +9,7 @@ console.log(localStorage.getItem("asteroids"), '>>>>')
 
 window.addEventListener("load", () => {
     sound = document.getElementById("sound1");
-    sound.play();
+    //sound.play();
     console.log("load");
 
 
